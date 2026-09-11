@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CalApp — Syllabus to Calendar</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>📅 CalApp</h1>
+    <p class="subtitle">Upload a syllabus. Claude finds the due dates. They land on your Google Calendar.</p>
+  </header>
+
+  <main>
+    <section id="connect-section" class="card">
+      <h2>1. Connect Google Calendar</h2>
+      <p id="connect-status">Checking connection…</p>
+      <button id="connect-btn" class="hidden">Connect Google Calendar</button>
+      <button id="disconnect-btn" class="hidden secondary">Disconnect</button>
+    </section>
+
+    <section id="upload-section" class="card">
+      <h2>2. Upload your syllabus</h2>
+      <p class="hint">PDF, DOCX, or TXT.</p>
+      <input type="file" id="file-input" accept=".pdf,.docx,.txt,.md" />
+      <button id="parse-btn">Parse Syllabus</button>
+      <p id="parse-status" class="status"></p>
+    </section>
+
+    <section id="review-section" class="card hidden">
+      <h2>3. Review due dates</h2>
+      <label>
+        Course name:
+        <input type="text" id="course-name-input" placeholder="e.g. CS 301 - Algorithms" />
+      </label>
+      <table id="items-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Title</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Type</th>
+            <th>Notes</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="items-body"></tbody>
+      </table>
+      <button id="add-row-btn" class="secondary">+ Add row</button>
+      <button id="submit-btn">Add checked items to Google Calendar</button>
+      <p id="submit-status" class="status"></p>
+      <ul id="results-list"></ul>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
