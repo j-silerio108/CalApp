@@ -34,6 +34,7 @@
         Course name:
         <input type="text" id="course-name-input" placeholder="e.g. CS 301 - Algorithms" />
       </label>
+      <div id="course-info" class="course-info hidden"></div>
       <table id="items-table">
         <thead>
           <tr>
@@ -52,6 +53,71 @@
       <button id="submit-btn">Add checked items to Google Calendar</button>
       <p id="submit-status" class="status"></p>
       <ul id="results-list"></ul>
+    </section>
+
+    <section id="schedule-section" class="card">
+      <h2>4. Build your weekly schedule</h2>
+      <p class="hint">Add your recurring class and work blocks, set a commute buffer, and set a gym target — CalApp will fit gym sessions into your open time and push everything to Google Calendar as repeating weekly events.</p>
+
+      <table id="commitments-table">
+        <thead>
+          <tr>
+            <th>Label</th>
+            <th>Type</th>
+            <th>Days</th>
+            <th>Start</th>
+            <th>End</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="commitments-body"></tbody>
+      </table>
+      <button id="add-commitment-btn" class="secondary">+ Add class/work block</button>
+
+      <label style="margin-top:16px;">
+        Commute time (minutes, added before &amp; after each class/work block)
+        <input type="text" id="commute-minutes-input" placeholder="e.g. 20" style="width:100px;" />
+      </label>
+
+      <fieldset style="margin-top:16px; border:1px solid var(--border); border-radius:8px;">
+        <legend>Gym target</legend>
+        <label>Sessions per week
+          <input type="text" id="gym-sessions-input" placeholder="e.g. 4" style="width:80px;" />
+        </label>
+        <label>Session length (minutes)
+          <input type="text" id="gym-duration-input" placeholder="e.g. 60" style="width:80px;" />
+        </label>
+        <label>Preferred window
+          <input type="time" id="gym-window-start-input" value="06:00" style="width:auto; display:inline-block;" />
+          to
+          <input type="time" id="gym-window-end-input" value="22:00" style="width:auto; display:inline-block;" />
+        </label>
+      </fieldset>
+
+      <button id="optimize-btn">Optimize Schedule</button>
+      <p id="optimize-status" class="status"></p>
+
+      <div id="schedule-preview" class="hidden">
+        <h3>Proposed weekly schedule</h3>
+        <ul id="schedule-preview-list"></ul>
+        <button id="add-schedule-btn">Add Weekly Schedule to Google Calendar</button>
+        <p id="schedule-submit-status" class="status"></p>
+        <ul id="schedule-results-list"></ul>
+      </div>
+    </section>
+
+    <section id="calendar-section" class="card">
+      <h2>5. Your calendar</h2>
+      <div class="cal-nav">
+        <button id="cal-prev-btn" class="secondary">‹ Prev week</button>
+        <span id="cal-week-label"></span>
+        <button id="cal-next-btn" class="secondary">Next week ›</button>
+      </div>
+      <p id="cal-status" class="status"></p>
+      <div id="cal-allday-row" class="cal-allday-row"></div>
+      <div id="cal-scroll" class="cal-scroll">
+        <div id="cal-grid" class="cal-grid"></div>
+      </div>
     </section>
   </main>
 

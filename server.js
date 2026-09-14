@@ -7,6 +7,7 @@ import { fileURLToPath } from "url";
 import { extractText } from "./lib/extractText.js";
 import { extractDueDates } from "./lib/claude.js";
 import * as googleCalendar from "./lib/googleCalendar.js";
+import { buildSchedule, toHHMM, toMinutes } from "./lib/scheduler.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = Number(process.env.PORT) || 3000;
@@ -78,6 +79,73 @@ app.post("/api/create-events", async (req, res) => {
       return res.status(400).json({ error: "No items to add." });
     }
     const results = await googleCalendar.createEvents(items, courseName || null, PORT);
+    res.json({ results });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ---- Calendar view -------------------------------------------------------
+
+app.get("/api/calendar/week", async (req, res) => {
+  try {
+    const { start } = req.query;
+    if (!start || !/^\d{4}-\d{2}-\d{2}$/.test(start)) {
+      return res.status(400).json({ error: "Missing/invalid start date (expected YYYY-MM-DD)." });
+    }
+    const events = await googleCalendar.listWeekEvents(PORT, start);
+    res.json({ events });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete("/api/calendar/event/:id", async (req, res) => {
+  try {
+    await googleCalendar.deleteEvent(req.params.id, PORT);
+    res.json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ---- Weekly schedule building -----------------------------------------
+
+app.post("/api/build-schedule", (req, res) => {
+  try {
+    const { commitments, commuteMinutes, gym } = req.body;
+    if (!Array.isArray(commitments)) {
+      return res.status(400).json({ error: "commitments must be an array." });
+    }
+    const { commuteBlocks, gymSessions, warnings } = buildSchedule({
+      commitments,
+      commuteMinutes: Number(commuteMinutes) || 0,
+      gym: gym && gym.sessionsPerWeek > 0 ? gym : null,
+    });
+    // Convert minute-of-day numbers back to HH:MM for the frontend to display.
+    res.json({
+      commuteBlocks: commuteBlocks.map((b) => ({ ...b, start: toHHMM(b.start), end: toHHMM(b.end) })),
+      gymSessions: gymSessions.map((s) => ({ ...s, start: toHHMM(s.start), end: toHHMM(s.end) })),
+      warnings,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post("/api/create-recurring-events", async (req, res) => {
+  try {
+    const { blocks } = req.body;
+    if (!Array.isArray(blocks) || blocks.length === 0) {
+      return res.status(400).json({ error: "No schedule blocks to add." });
+    }
+    // Frontend sends start/end as "HH:MM"; googleCalendar.js works in minutes-of-day.
+    const minuteBlocks = blocks.map((b) => ({ ...b, start: toMinutes(b.start), end: toMinutes(b.end) }));
+    const results = await googleCalendar.createRecurringEvents(minuteBlocks, PORT);
     res.json({ results });
   } catch (err) {
     console.error(err);

@@ -9,6 +9,7 @@
   --accent-hover: #9a531f;
   --ok: #2f7a4f;
   --err: #b5342f;
+  --input-bg: #ffffff;
 }
 
 * { box-sizing: border-box; }
@@ -74,12 +75,16 @@ input[type="text"], input[type="date"], input[type="time"], select {
   padding: 6px 8px;
   border: 1px solid var(--border);
   border-radius: 6px;
-  background: #fff;
+  background: var(--input-bg);
   color: var(--text);
 }
 
 #course-name-input { width: 100%; margin-top: 4px; margin-bottom: 12px; }
-label { display: block; font-size: 0.9rem; color: var(--muted); }
+label { display: block; font-size: 0.9rem; color: var(--muted); margin-top: 8px; }
+
+fieldset { padding: 12px 16px 16px; }
+legend { padding: 0 6px; font-size: 0.9rem; color: var(--muted); }
+fieldset label { display: inline-block; margin-right: 16px; }
 
 table { width: 100%; border-collapse: collapse; margin-top: 8px; }
 th { text-align: left; font-size: 0.8rem; color: var(--muted); padding: 4px 6px; }
@@ -105,6 +110,97 @@ td select { width: 100%; }
 #results-list li.ok { color: var(--ok); }
 #results-list li.err { color: var(--err); }
 
+.course-info {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 0.85rem;
+  margin: -4px 0 12px;
+}
+.course-info div + div { margin-top: 4px; }
+.course-info a { color: var(--accent); }
+
+/* ---- Weekly calendar view ---- */
+
+.cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.cal-nav span { font-weight: 600; font-size: 0.95rem; }
+
+.cal-scroll { overflow: auto; max-height: 640px; border: 1px solid var(--border); border-radius: 8px; }
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: 56px repeat(7, minmax(96px, 1fr));
+  min-width: 720px;
+}
+
+.cal-header-cell {
+  grid-row: 1;
+  position: sticky;
+  top: 0;
+  background: var(--card);
+  text-align: center;
+  font-size: 0.8rem;
+  padding: 6px 2px;
+  border-bottom: 1px solid var(--border);
+  z-index: 1;
+}
+.cal-header-cell .cal-date { color: var(--muted); font-size: 0.7rem; }
+
+.cal-hour-label {
+  grid-column: 1;
+  font-size: 0.65rem;
+  color: var(--muted);
+  text-align: right;
+  padding-right: 6px;
+  transform: translateY(-6px);
+}
+
+.cal-day-bg {
+  border-left: 1px solid var(--border);
+  background-image: repeating-linear-gradient(to bottom, transparent, transparent 63px, var(--border) 64px);
+}
+
+.cal-event {
+  position: relative;
+  color: #fff;
+  border-radius: 4px;
+  padding: 2px 18px 2px 5px;
+  font-size: 0.7rem;
+  line-height: 1.2;
+  overflow: hidden;
+  margin: 0 2px;
+}
+.cal-event-del {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  background: transparent;
+  border: none;
+  color: #fff;
+  opacity: 0.7;
+  font-size: 0.7rem;
+  line-height: 1;
+  padding: 2px 4px;
+  margin: 0;
+  cursor: pointer;
+}
+.cal-event-del:hover { opacity: 1; background: rgba(0, 0, 0, 0.25); }
+.cal-type-class { background: var(--accent); }
+.cal-type-work { background: var(--accent-hover); }
+.cal-type-commute { background: var(--muted); }
+.cal-type-gym { background: var(--ok); }
+.cal-type-due { background: var(--err); }
+.cal-type-default { background: var(--accent); }
+
+.cal-allday-row {
+  display: grid;
+  grid-template-columns: 56px repeat(7, minmax(96px, 1fr));
+  gap: 2px;
+  margin-bottom: 4px;
+}
+.cal-allday-row .cal-event { margin-bottom: 2px; }
+
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
@@ -117,7 +213,7 @@ td select { width: 100%; }
     --accent-hover: #e88f57;
     --ok: #5fbf82;
     --err: #e0655f;
+    --input-bg: #2c2c29;
   }
-  input, select { background: #2c2c29; color: var(--text); }
   button.secondary:hover { background: #3a2c22; }
 }
